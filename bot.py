@@ -33,6 +33,10 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
     """
     message = update.message
     
+    # Ignore updates that don't contain a standard message
+    if not message:
+        return
+    
     # Ignore messages from private chats
     if message.chat.type == 'private':
         return
