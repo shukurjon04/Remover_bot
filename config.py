@@ -21,14 +21,16 @@ SPAM_KEYWORDS = [
     # Uzbek promotional keywords
     'chegirma', 'aksiya', 'tekin', 'bepul', 'narxi', 'sotiladi',
     'buyurtma', 'zakaz', 'reklama', 'kanal', 'guruh', 'obuna',
+    'murojaat', 'aloqa', 'bog\'lanish', 'xizmat', 'ishga', 'vakansiya',
     
     # Russian promotional keywords
     'скидка', 'акция', 'бесплатно', 'заказ', 'реклама', 'канал',
-    'группа', 'подписка', 'цена', 'продается',
+    'группа', 'подписка', 'цена', 'продается', 'работа', 'вакансия',
     
     # Common promotional phrases
     'join', 'subscribe', 'follow', 'click here', 'buy now',
-    'limited offer', 'special price', 'discount',
+    'limited offer', 'special price', 'discount', 'manager',
+    'admin', 'contact', 'earn', 'money', 'crypto',
 ]
 
 # URL patterns to detect

@@ -2,7 +2,8 @@
 Spam detection module for identifying spam and promotional content
 """
 import re
-from telegram import Message
+from telegram import Message, MessageOriginChannel, MessageOriginChat
+from telegram.constants import ChatType
 from config import SPAM_KEYWORDS, URL_PATTERNS, PHONE_PATTERNS, MAX_EMOJIS
 
 
@@ -33,16 +34,15 @@ class SpamDetector:
         """
         if not message.text and not message.caption:
             # Check for forwarded media from channels
-            if message.forward_from_chat and message.forward_from_chat.type == 'channel':
+            if message.forward_origin and isinstance(message.forward_origin, MessageOriginChannel):
                 return True, "Kanaldan forward qilingan media"
             return False, ""
         
         text = (message.text or message.caption or "").lower()
         
         # Check for forwarded messages from channels
-        if message.forward_from_chat:
-            if message.forward_from_chat.type == 'channel':
-                return True, "Kanaldan forward qilingan xabar"
+        if message.forward_origin and isinstance(message.forward_origin, MessageOriginChannel):
+            return True, "Kanaldan forward qilingan xabar"
         
         # Check for URLs
         if self._contains_url(text):
@@ -63,7 +63,7 @@ class SpamDetector:
         return False, ""
     
     def _contains_url(self, text: str) -> bool:
-        """Check if text contains URLs"""
+        """Check if text contains URLs or usernames"""
         # Check with regex for http/https URLs
         if self.url_pattern.search(text):
             return True
@@ -71,6 +71,13 @@ class SpamDetector:
         # Check for common URL patterns
         for pattern in URL_PATTERNS:
             if pattern in text.lower():
+                return True
+        
+        # Check for @username mentions
+        if '@' in text:
+            # Simple check for words starting with @
+            words = text.split()
+            if any(word.startswith('@') and len(word) > 1 for word in words):
                 return True
         
         return False
@@ -99,6 +106,6 @@ class SpamDetector:
         # Count how many spam keywords are present
         keyword_count = sum(1 for keyword in SPAM_KEYWORDS if keyword in text)
         
-        # If multiple spam keywords found, likely spam
-        # We use threshold of 2 to avoid false positives
-        return keyword_count >= 2
+        # If at least one spam keyword found, likely spam
+        # We lowered threshold to 1 for more aggressive filtering
+        return keyword_count >= 1

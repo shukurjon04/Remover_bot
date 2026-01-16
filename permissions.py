@@ -2,6 +2,7 @@
 Permission checking utilities for admin and owner verification
 """
 from telegram import Chat, ChatMember, User
+from telegram.constants import ChatMemberStatus
 from telegram.ext import ContextTypes
 from functools import lru_cache
 import logging
@@ -39,7 +40,7 @@ class PermissionChecker:
             member = await context.bot.get_chat_member(chat.id, user.id)
             
             # Check if user is creator (owner) or administrator
-            if member.status in [ChatMember.OWNER, ChatMember.ADMINISTRATOR]:
+            if member.status in [ChatMemberStatus.OWNER, ChatMemberStatus.ADMINISTRATOR]:
                 logger.info(f"User {user.id} (@{user.username}) is {member.status} in chat {chat.id}")
                 return True
             
@@ -70,7 +71,7 @@ class PermissionChecker:
             bot_member = await context.bot.get_chat_member(chat.id, context.bot.id)
             
             # Check if bot is admin and has delete permission
-            if bot_member.status == ChatMember.ADMINISTRATOR:
+            if bot_member.status == ChatMemberStatus.ADMINISTRATOR:
                 # Check if bot has can_delete_messages permission
                 if hasattr(bot_member, 'can_delete_messages') and bot_member.can_delete_messages:
                     return True
