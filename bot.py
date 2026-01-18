@@ -47,10 +47,12 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
     
     try:
         # Check if user is admin or owner
+        # Passing message object to handle anonymous admins and sender_chat
         is_admin = await permission_checker.is_admin_or_owner(
             message.chat,
             message.from_user,
-            context
+            context,
+            message=message
         )
         
         # If user is admin or owner, don't check for spam
@@ -59,6 +61,11 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
                 f"Skipping spam check for admin/owner {message.from_user.id} "
                 f"(@{message.from_user.username}) in chat {message.chat.id}"
             )
+            return
+            
+        # Ignore automatic forwards (from linked channels)
+        if message.is_automatic_forward:
+            logger.info(f"Skipping spam check for automatic forward in chat {message.chat.id}")
             return
         
         # Check if message is spam
