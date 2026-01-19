@@ -1,3 +1,4 @@
+from __future__ import annotations
 """
 Telegram Spam Removal Bot
 Automatically removes spam and advertisements from groups

@@ -1,7 +1,5 @@
-"""
-Permission checking utilities for admin and owner verification
-"""
-from telegram import Chat, ChatMember, User
+from __future__ import annotations
+from telegram import Chat, ChatMember, User, Message
 from telegram.constants import ChatMemberStatus
 from telegram.ext import ContextTypes
 from functools import lru_cache

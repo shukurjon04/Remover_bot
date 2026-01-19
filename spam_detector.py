@@ -1,3 +1,4 @@
+from __future__ import annotations
 """
 Spam detection module for identifying spam and promotional content
 """
